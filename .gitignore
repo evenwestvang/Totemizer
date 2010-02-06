@@ -1,0 +1,34 @@
+# Version control artifacts
+_darcs/
+
+# Common editor files
+*~
+*.BAK
+*.bak
+
+# Compiler artifacts
+*.bundle
+*.[oa]
+*.so
+*.elf
+*.o
+*.hex
+
+mkmf.log
+
+# OS metadata
+.DS_Store
+
+# Process core dumps
+.*.dump
+.*.mdmp
+
+# Various config
+.git-wtfrc
+
+# System files
+*.pid
+
+# Can't check in sound files. Get something you have the rights to
+*.wav
+
