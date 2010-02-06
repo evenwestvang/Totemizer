@@ -21,7 +21,7 @@ environments[environment_select][0] => buf_ambience.read;
 1 => buf_ambience.play; 
 1 => buf_ambience.loop; 
 0 => buf_ambience.gain;
-1000::ms => buf_ambience_easing.duration;
+300::ms => buf_ambience_easing.duration;
 
 // -------- Setup incident
 
@@ -58,7 +58,17 @@ fun void control_ambient_level()
     // Don't blow my eardrums out if the hardware transmits a bogus value
     Math.min(intensity, 1) => buf_ambience.gain;
 
-    // First run sanity
+
+    // Cut off ambience below a certain thresh. Use easing to avoid popping
+    if (intensity > 0.1 && buf_ambience_easing.value() == 0) {
+      buf_ambience_easing.keyOn();
+    }
+
+    if (intensity < 0.1 && buf_ambience_easing.value() == 1) {
+      buf_ambience_easing.keyOff();
+    }
+
+    // Include some sanity on first run
     if (last_intensity == 0) { intensity => last_intensity; }
 
     // Rate of change
@@ -66,15 +76,15 @@ fun void control_ambient_level()
     delta_intensity * 0.70 => delta_intensity;
     intensity => last_intensity;
 
-    // Bump
+    // Woof on high deltas
     if (delta_intensity < -0.10) {
       1 => buf_incident.play;
       0 => buf_incident.pos;
       intensity => buf_incident.rate;
     }
 
-    // The time is now
-    1::ms => now;
+    // Don't run at full speed as link is slow
+    20::ms => now;
   }
 }
 
@@ -95,7 +105,7 @@ fun void control_motion_level() {
   int abs_x, abs_y, abs_z, abs_total;
   float abs_normalized;
 
-  wail_envelope.set(1500::ms, 2000::ms, 0.4, 1200::ms );
+  wail_envelope.set(1500::ms, 5000::ms, 0.4, 1800::ms );
   wail_envelope.keyOff();
 
   // Calibration
@@ -111,10 +121,11 @@ fun void control_motion_level() {
 
     if (abs_normalized > 0.2) { wail_envelope.keyOn(); }
     if (wail_envelope.state() == 2 && abs_normalized < 0.2 ) { wail_envelope.keyOff(); }
-    <<< abs_z / 1100.1 >>>;
+
+    0.75 + (abs_z / 4100.1) => buf_motion_wail.rate;
 
     // The time is now
-    1::ms => now;
+    20::ms => now;
   }
 }
 

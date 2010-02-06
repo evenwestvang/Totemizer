@@ -1,3 +1,6 @@
-A wee ATmega168 to ChucK interconnect hack for amusing toddlers with accelerometers.
+A wee ATmega168 to ChucK bluetooth interconnect hack for amusing toddlers with accelerometers in magic purses.
 
-Nothing to see. Please move on.
+TODO: 
+- Add more sound and interesting modulation
+- Attempt to get the bluetooth module to up its clock.
+- Do some video of the proto
